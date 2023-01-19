@@ -1,79 +1,48 @@
-from bs4 import BeautifulSoup
-import requests
-import csv
+from datetime import datetime
+import helper
+import bnn
+import jib
+import advice
+
+# main
+now = datetime.today()
+
+### bnn
+bnn_desktop = bnn.get_bnn("https://www.bnn.in.th/en/p/desktop-and-all-in-one/desktop?page=pagesize")
+helper.export("_".join(["bnn_desktop", now.strftime("%d%m%Y")]), bnn_desktop, ['Title','Info','Price','Stock'])
+
+bnn_gaming_desktop = bnn.get_bnn("https://www.bnn.in.th/en/p/desktop-and-all-in-one/gaming-desktop?page=pagesize")
+helper.export("_".join(["bnn_gaming_desktop", now.strftime("%d%m%Y")]), bnn_gaming_desktop, ['Title','Info','Price','Stock'])
+
+bnn_mini_pc = bnn.get_bnn("https://www.bnn.in.th/en/p/desktop-and-all-in-one/mini-pc?page=pagesize")
+helper.export("_".join(["bnn_mini_pc", now.strftime("%d%m%Y")]), bnn_mini_pc, ['Title','Info','Price','Stock'])
+
+bnn_aio = bnn.get_bnn("https://www.bnn.in.th/en/p/desktop-and-all-in-one/all-in-one?page=pagesize")
+helper.export("_".join(["bnn_aio", now.strftime("%d%m%Y")]), bnn_aio, ['Title','Info','Price','Stock'])
 
 
-# class
-class computer_info:
-    def __init__(self, title, info, price) -> None:
-        self.title = title
-        self.info = info
-        self.price = price
+### jib
+jib_desktop = jib.get_jib(27)
+helper.export("_".join(["jib_desktop", now.strftime("%d%m%Y")]), jib_desktop, ['Title','Info','Price','Stock'])
 
-#function
-def computer_info_to_tuple(computer):
-    return (computer.title.strip(), computer.info.strip(), computer.price.strip())
+jib_aio = jib.get_jib(28)
+helper.export("_".join(["jib_aio", now.strftime("%d%m%Y")]), jib_aio, ['Title','Info','Price','Stock'])
 
-def get_request(url):
-    res = requests.get(url)
-    res.encoding = "utf-8"
+jib_mini_pc = jib.get_jib(1496)
+helper.export("_".join(["jib_mini_pc", now.strftime("%d%m%Y")]), jib_mini_pc, ['Title','Info','Price','Stock'])
 
-    return res
-    
+### advice
+av_aio = advice.get_av("all-in-one-pc", ["acer","asus", "lenovo", "dell", "hp"])
+helper.export("_".join(["av_aio", now.strftime("%d%m%Y")]), av_aio, ['Title','Info','Price','Stock'])
 
-def export(file_name, list):
-    csv_col = ['title','info','price']
+av_desktop = advice.get_av("desktop-pc", ["acer","asus", "lenovo", "dell", "hp"])
+helper.export("_".join(["av_desktop", now.strftime("%d%m%Y")]), av_desktop, ['Title','Info','Price','Stock'])
 
-    f_name = "{}.csv".format(file_name)
-    f = open(f_name, 'w')
+av_mini_pc = advice.get_av("mini-pc", ["asus", "intel", "msi"])
+helper.export("_".join(["av_mini_pc", now.strftime("%d%m%Y")]), av_mini_pc, ['Title','Info','Price','Stock'])
 
-    with f:
-        writer = csv.writer(f)
-
-        writer.writerow(csv_col)
-        
-        for data in list:
-            row = computer_info_to_tuple(data)
-            print(row)
-            writer.writerow(row)
-
-
-
-def get_bnn():
-    output = []
-    page = 1
-
-    page_response = get_request("https://www.bnn.in.th/en/p/desktop-and-all-in-one/desktop?page=1")
-    soup_page = BeautifulSoup(page_response.text, 'html.parser')
-    
-    page_size = soup_page.find('div', class_="product-groups-pagination")['total-page']
-
-    while page != int(page_size) + 1:
-        res = get_request("https://www.bnn.in.th/en/p/desktop-and-all-in-one/desktop?page={page}")
-
-        soup = BeautifulSoup(res.text, 'html.parser')
-        
-        items = soup.find_all('div', class_="product-item-details")
-
-        for item in items:
-            title = item.find('div', class_="product-name")
-            info = item.find('div', class_="product-short-attribute")
-            price = item.find('div', class_="product-price")
-
-            # if item.find_all('div', class_="save-up-to"):
-
-            output.append(computer_info(title.text, info.text, price.text))
-            
-        page = page + 1
-
-    return output
-
-# call
-output = get_bnn()
-export("bnn",output)
-
-
-
+av_gaming_desktop = advice.get_av("gaming-desktop-pc", ["acer","asus", "msi", "dell", "hp"])
+helper.export("_".join(["av_gaming_desktop", now.strftime("%d%m%Y")]), av_gaming_desktop, ['Title','Info','Price','Stock'])
     
 
 
