@@ -2,6 +2,27 @@ import requests
 import csv
 import model
 
+def get_brand(text):
+    # ASUS ACER DELL HP MSI LENOVO ALIENWARE
+    lowText = text.lower()
+    if "asus" in lowText:
+        return "ASUS"
+    elif "acer" in lowText:
+        return "ACER"
+    elif "dell" in lowText:
+       return "DELL"
+    elif "hp" in lowText:
+       return "HP"
+    elif "msi" in lowText:
+       return "MSI"
+    elif "lenovo" in lowText:
+        return "LENOVO"
+    elif "alienware" in lowText:
+        return "ALIENWARE"
+    else:
+        return ""
+
+
 def get_request(url):
     res = requests.get(url)
     if res.status_code != 200:
@@ -26,7 +47,7 @@ def get_request_jib(url):
 
 def export(file_name, list, col):
     f_name = "{}.csv".format(file_name)
-    f = open(f_name, 'w')
+    f = open(f_name, 'w', encoding="utf-8")
 
     with f:
         writer = csv.writer(f)

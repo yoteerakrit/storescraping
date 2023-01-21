@@ -23,11 +23,17 @@ def get_jib(category):
         info = details.find('div', class_="description")
         price = details.find('p', class_="price_total")
 
+        full_price_text = ""
+        if details.find('span', class_="price"):
+            full_price_text = details.find('span', class_="price").text.replace('-','').replace(',','').strip()
+
         print(info.text)
 
+        brand_text = ""
         title_text = ""
         if title is not None:
             title_text = title.strip()
+            brand_text = helper.get_brand(title_text)
 
         info_text = ""
         if info is not None:
@@ -35,8 +41,8 @@ def get_jib(category):
 
         price_text = ""
         if price is not None:
-            price_text = price.text.strip()
+            price_text = price.text.replace('-','').replace(',','').strip()
 
-        output.append(model.computer_info(title_text, info_text, price_text, ""))
+        output.append(model.computer_info(brand_text, title_text, info_text, price_text, full_price_text, "", ""))
     
     return output

@@ -18,7 +18,14 @@ def get_av(type, brands):
             title = item['item-name']
 
             info = item.find('div', class_="item-spec")
-            price = item.find('div', class_="price-to-cart").find('div', class_="sale")
+            # full_price = item.find('div', class_="price-to-cart").find('div', class_="sale")
+            price = item.find('div', class_="online-btn-cart")['data-price']
+            full_price = item.find('div', class_="online-btn-cart")['data-price_srp']
+            discount = item.find('div', class_="online-save")
+
+            discount_text = ''
+            if discount is not None:
+                discount_text = discount.text.replace('ประหยัด', '').replace('.-', '').strip()
 
             stock_info=""
             if not item.find('div', class_="sales-price") and not item.find('div', class_="cart-srp"):
@@ -32,11 +39,11 @@ def get_av(type, brands):
             if info is not None:
                 info_text = info.text.strip()
 
-            price_text = ""
-            if price is not None:
-                price_text = price.text.strip()
+            # full_price_text = ""
+            # if full_price is not None:
+            #     full_price_text = full_price.text.strip()
 
-            output.append(model.computer_info(title_text, info_text, price_text, stock_info))
+            output.append(model.computer_info(brand.upper() ,title_text, info_text, price, full_price, discount_text, stock_info))
             
 
     return output
