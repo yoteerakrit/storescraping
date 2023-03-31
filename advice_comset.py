@@ -4,11 +4,12 @@ import helper
 import model
 import time
 
-def get_av(type, brands):
+def get_av_comset(brands):
     output = []
 
     for brand in brands:
-        url = "https://advice.co.th/product/type/type-brand".replace("type", type).replace("brand", brand)
+        # url = "https://www.advice.co.th/product/computer-set/computer-set-brand".replace("brand", brand)
+        url = "https://www.advice.co.th/product/computer-set/computer-set-intel"
 
         driver = webdriver.Chrome() 
         # res = helper.get_request(url)
@@ -21,6 +22,8 @@ def get_av(type, brands):
         soup = BeautifulSoup(driver.page_source, 'html.parser')
 
         items = soup.find('div', class_="product-column-4").find_all('div', class_="item")
+        
+        print(len(items))
 
         for item in items:
             # brands = item['item-brand']
